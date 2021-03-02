@@ -1,4 +1,5 @@
-const chromium = require('chrome-aws-lambda')
+const chrome = require('chrome-aws-lambda')
+const puppeteer = require('puppeteer-core')
 const nodemailer = require('nodemailer')
 
 const searchUrl = 'https://search-beta.abc.net.au/index.html?siteTitle=news#/?configure%5BgetRankingInfo%5D=true&configure%5BclickAnalytics%5D=true&configure%5BuserToken%5D=anonymous-98736bcf-4df7-45d6-a18d-326591d16864&configure%5BhitsPerPage%5D=10&query=%22Sydney%20news%3A%22&page=1&sortBy=ABC_production_all_latest'
@@ -51,16 +52,18 @@ async function sendMail(messageHtml) {
 	console.log('Mail sent.')
 }
 
+async function getBrowserOptions() {
+	return {
+		args: chrome.args,
+		executablePath: await chrome.executablePath,
+		headless: chrome.headless
+	}
+}
+
 async function getLatestNewsUrl() {
 	console.log('Scraping for latest news link...')
-	// const browser = await puppeteer.launch()
-	browser = await chromium.puppeteer.launch({
-		args: chromium.args,
-		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: chromium.headless,
-		ignoreHTTPSErrors: true,
-	});
+	const browserOptions = await getBrowserOptions()
+	browser = await puppeteer.launch(browserOptions)
 	const page = await browser.newPage()
 	await page.goto(searchUrl)
 	const selector = '.link__link--1JC6x'
@@ -77,13 +80,8 @@ async function getLatestNewsUrl() {
 
 async function getPageContent(pageUrl) {
 	console.log('Scraping for news page content...')
-	const browser = await chromium.puppeteer.launch({
-		args: chromium.args,
-		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: chromium.headless,
-		ignoreHTTPSErrors: true,
-	});
+	const browserOptions = await getBrowserOptions()
+	browser = await puppeteer.launch(browserOptions)
 	const page = await browser.newPage()
 	await page.goto(pageUrl)
 	const selector = '#body'
