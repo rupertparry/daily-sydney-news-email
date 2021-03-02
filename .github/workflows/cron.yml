@@ -2,7 +2,7 @@ name: morning-cron
 
 on:
   schedule:
-    - cron: '30 19 * * *'
+    - cron: '00 22 * * *'
 
 jobs:
   cron:
