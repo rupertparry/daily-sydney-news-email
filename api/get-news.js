@@ -49,6 +49,15 @@ async function sendMail(messageHtml) {
 			text: 'Your daily news bulletin, from ABC Sydney.',
 			html: messageHtml
 	})
+
+	await transporter.sendMail({
+		from: 'ABC News Update <postmaster@mail.rupert.cloud>',
+		to: 'ericlferguson1@gmail.com',
+		subject: 'Your daily Sydney news bulletin',
+		text: 'Your daily news bulletin, from ABC Sydney.',
+		html: messageHtml
+	})
+
 	console.log('Mail sent.')
 }
 
